@@ -1,7 +1,10 @@
 use bevy::{
+    camera::Hdr,
     dev_tools::infinite_grid::{InfiniteGrid, InfiniteGridSettings},
     input::mouse::{MouseMotion, MouseWheel},
+    pbr::{ContactShadows, ScreenSpaceAmbientOcclusion},
     prelude::*,
+    render::view::Tonemapping,
 };
 
 #[derive(Resource, Default)]
@@ -24,6 +27,11 @@ pub fn setup(mut commands: Commands) {
     commands.spawn((
         Camera3d::default(),
         Transform::from_xyz(0.0, 1.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        ContactShadows::default(),
+        Hdr,
+        ScreenSpaceAmbientOcclusion::default(),
+        Msaa::Off,
+        Tonemapping::AcesFitted,
         ViewerCamera {
             base_target: Vec3::ZERO,
             offset: Vec3::ZERO,
