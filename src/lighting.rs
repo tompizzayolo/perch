@@ -19,11 +19,11 @@ impl Default for LightingState {
 pub struct ViewerDirectionalLight;
 
 pub fn setup(mut commands: Commands, lighting: Res<LightingState>) {
-    commands.spawn((AmbientLight {
+    commands.insert_resource(GlobalAmbientLight {
         color: Color::WHITE,
-        brightness: 1000.0,
-        affects_lightmapped_meshes: true,
-    },));
+        brightness: 1900.0,
+        ..default()
+    });
 
     let illuminance = if lighting.enabled {
         lighting.illuminance
@@ -32,6 +32,7 @@ pub fn setup(mut commands: Commands, lighting: Res<LightingState>) {
     };
 
     commands.spawn((
+        Name::from("Directional Light"),
         DirectionalLight {
             illuminance,
             color: Color::WHITE,

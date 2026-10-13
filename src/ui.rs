@@ -8,24 +8,49 @@ use bevy::{
     },
     prelude::*,
     ui::Checked,
-    ui_widgets::{SliderStep, SliderValue, ValueChange, slider_self_update},
+    ui_widgets::{SliderValue, ValueChange, slider_self_update},
 };
+
+pub fn setup(mut commands: Commands) {
+    commands.spawn((
+        Camera2d,
+        IsDefaultUiCamera,
+        Camera {
+            order: 1,
+            clear_color: ClearColorConfig::None,
+            ..default()
+        },
+    ));
+}
 
 pub fn ui_root() -> impl SceneList {
     bsn_list! {
-        Camera2d
-        --
-        @lighting_panel()
+        @ui_container()
+    }
+}
+
+fn ui_container() -> impl Scene {
+    bsn! {
+        Node {
+            width: percent(100),
+            height: percent(100),
+            display: Display::Flex,
+            flex_direction: FlexDirection::Column,
+            align_items: AlignItems::Start,
+            justify_content: JustifyContent::Start,
+            padding: px(12),
+        }
+        Children [
+            @lighting_panel()
+        ]
     }
 }
 
 fn lighting_panel() -> impl Scene {
     bsn! {
         Node {
-            position_type: PositionType::Absolute,
-            top: px(12),
-            left: px(12),
-            width: px(260),
+            width: px(280),
+            min_width: px(280),
             display: Display::Flex,
             flex_direction: FlexDirection::Column,
             row_gap: px(8),
@@ -60,16 +85,20 @@ fn lighting_panel() -> impl Scene {
             @label("Intensity")
             --
             @FeathersSlider {
-                @max: 20000.0,
+                @max: 100.0,
             }
-            SliderValue(5000.0)
-            SliderStep(100.0)
+            SliderValue(25.0)
+            Node {
+                width: percent(100),
+                min_width: px(220),
+                height: px(24),
+            }
             AccessibleLabel("Directional light intensity")
             on(slider_self_update)
             on(
                 |change: On<ValueChange<f32>>,
                  mut lighting: ResMut<LightingState>| {
-                    lighting.illuminance = change.value;
+                    lighting.illuminance = change.value * 200.0;
                 }
             )
         ]

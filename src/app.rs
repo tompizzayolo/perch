@@ -8,7 +8,7 @@ use bevy::{
 
 pub fn run() {
     App::new()
-        .insert_resource(ClearColor(Color::srgb(0.35, 0.35, 0.35)))
+        .insert_resource(ClearColor(Color::srgb(0.6, 0.6, 0.6)))
         .init_resource::<viewer::ViewerState>()
         .init_resource::<lighting::LightingState>()
         .insert_resource(UiTheme(create_dark_theme()))
@@ -22,7 +22,13 @@ pub fn run() {
         ))
         .add_systems(
             Startup,
-            (viewer::setup, lighting::setup, ui::ui_root.spawn()),
+            (
+                viewer::setup,
+                lighting::setup,
+                ui::setup,
+                ui::ui_root.spawn(),
+            )
+                .chain(),
         )
         .add_systems(
             Update,
